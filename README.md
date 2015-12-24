@@ -46,9 +46,17 @@ if(!require(plyr))install.packages("plyr")
 The interested reader will see that each function corresponds with 1 or multiple steps of the requirements. The mapping is as follows:
 
 - ```read_input_data``` - Step 1
+  *  Reads the necessary input files
+  *  Merges X and Y values and subject IDs
+  *  Merges training and test sets
 - ```select_columns``` - Step 2
+  *  Selects columns that contain the Mean or Standard Deviation
 - ```label_columns``` - Step 3 and 4
+  *  Includes the activity descriptions instead of the IDs.
+  *  Constructs descriptive activity names
 - ```produce_mean``` - Step 5
+  *  Calculates the mean across all columns for every subject and every activity.
+  *  As a result, the final output contains 30 (subjects) by 6 (activities) = 180 rows.
 
-Since [run_analysis.r](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/run_analysis.r) contains some info and the [codebook](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/codebook.html) is available as well, I will not comment any further in this document but encourage you to take a look at the script and codebook.
+Since [run_analysis.r](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/run_analysis.r) contains some info and the [codebook](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/codebook.Rmd) is available as well, I will not comment any further in this document but encourage you to take a look at the script and codebook.
 
