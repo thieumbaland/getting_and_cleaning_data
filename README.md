@@ -50,5 +50,5 @@ The interested reader will see that each function corresponds with 1 or multiple
 - ```label_columns``` - Step 3 and 4
 - ```produce_mean``` - Step 5
 
-Since [run_analysis.r](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/run_analysis.r) contains some info and the cookbook is available as well, I will not comment any further in this document but encourage you to take a look at the script and cookbook.
+Since [run_analysis.r](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/run_analysis.r) contains some info and the [codebook](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/codebook.html) is available as well, I will not comment any further in this document but encourage you to take a look at the script and codebook.
 

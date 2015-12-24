@@ -1,0 +1,100 @@
+---
+title: "Codebook"
+author: "Mathieu Wauters"
+date: "24 december 2015"
+output: html_document
+---
+
+###Input Data
+- **Training Set**:
+  * `X_train.txt`: contains feature readings for different subjects. These are values between `-1` and `1`.
+  * `y_train.txt`: contains corresponding activity codes (ranging from `1` to `6`)
+  * `subject_train.txt`: contains corresponding subject id (ranging from `1` to `30`)
+- **Test Set**:
+  * `X_test.txt`: contains feature values for different subjects. These are values between `-1` and `1`.
+  * `y_test.txt`: contains corresponding activity codes (ranging from `1` to `6`)
+  * `subject_test.txt`: contains corresponding subject id (ranging from `1` to `30`)
+- **Other**:
+  * `activity_labels.txt`: provides a description corresponding to the y-values of the training and test set. The values are `LAYING`, `SITTING`, `STANDING`, `WALKING`, `WALKING_DOWNSTAIRS`, `WALKING_UPSTAIRS`
+  * `features.txt`: provides a description of the different features.
+```{r message=FALSE, results='hide'}
+source('run_analysis.R')
+unique(df.final$activity_description)
+```
+###Processing
+Since we use functions and call these from within `main`, a lot of dataframes are stored locally. Here is a brief description for the training set (a similar reasoning applies to the test set):
+
+-  `df.features`: stores data from `features.txt`
+-  `df.activitylabels`: stores data from `activity_labels.txt`
+-  `df.train.subjectid`: stores subject ids of the training set
+-  `df.train.x`: stores feature readings from `X_train.txt`
+-  `df.train.y`: stores activity code from `y_train.txt`
+```{r message=FALSE, results='show'}
+  df.features=read.table('./input/features.txt',header=F); 
+  df.activitylabels=read_table('./input/activity_labels.txt',col_names=F); 
+  #read training data
+  df.train.subjectid=read_table('./input/train/subject_train.txt',col_names=F);  
+  df.train.x=read_table('./input/train/x_train.txt',col_names=F);
+  df.train.y=read_table('./input/train/y_train.txt',col_names=F);
+  #read test data
+  df.test.subjectid=read_table('./input/test/subject_test.txt',col_names=F); 
+  df.test.x=read_table('./input/test/x_test.txt',col_names=F);  
+  df.test.y=read_table('./input/test/y_test.txt',col_names=F);
+  #assign colnames
+  colnames(df.train.x)<-df.features[,ncol(df.features)]
+  colnames(df.train.y)<-"activity_id"
+  colnames(df.train.subjectid)<-"subject_id"
+  colnames(df.test.x)<-df.features[,ncol(df.features)]
+  colnames(df.test.y)<-"activity_id"
+  colnames(df.test.subjectid)<-"subject_id"
+  #print out a sample
+  print(df.features[1:10,2])
+```
+Merging data frames happens by `subject_id`, x-values and y-values.
+-  `df.train.merged` merges `df.train.subjectid`, `df.train.x` and `df.train.y`
+-  `df.test.merged` merges `df.test.subjectid`, `df.test.x` and `df.test.y`
+-  `df.merged` merges `df.train.merged` with `df.test.merged`
+```{r message=FALSE, results='show'}
+  #create 1 training set
+  df.train.merged<-bind_cols(df.train.subjectid,df.train.x,df.train.y)
+  
+  #create 1 test set
+  df.test.merged<-bind_cols(df.test.subjectid,df.test.x,df.test.y)
+  
+  #merge training and test set
+  df.merged<-rbind(df.train.merged,df.test.merged)
+  print(dim(df.merged))
+```
+
+
+- `columns_to_keep` contains a vector with column numbers to retain, which is anything with `std` or `mean` and the general info such as `subject_id` and `activity_id`.
+-  `df.merged.filtered` is the result of applying `columns_to_keep`
+-  Descriptive activity names are produced as follows:
+  * Different parts of a column name are separated by an underscore `_`
+  * `t` and `f` become `time` and `frequency`
+  * `std` is `StdDev`
+  * A mix of lower and uppercase is corrected.
+  * `Gyro` is `Gyroscope`, `Acc` is `Acceleration`
+  * `Mag` becomes `Magnitude`
+
+The full list of corrections is printed below:
+```{r message=FALSE, results='hide', eval=FALSE}
+    column.names[i] = gsub("\\()","",column.names[i]) 
+    column.names[i] = gsub("std()","StdDev",column.names[i]) 
+    column.names[i] = gsub("-mean","Mean",column.names[i]) 
+    column.names[i] = gsub("^(t)","time_",column.names[i]) 
+    column.names[i] = gsub("^(f)","freq_",column.names[i]) 
+    column.names[i] = gsub("([Gg]ravity)","Gravity",column.names[i]) 
+    column.names[i] = gsub("([Bb]ody[Bb]ody|[Bb]ody)","Body",column.names[i]) 
+    column.names[i] = gsub("[Gg]yro","_Gyroscope_",column.names[i])
+    column.names[i] = gsub("Acc","_Acceleration_",column.names[i])
+    column.names[i] = gsub("JerkMean","Jerk_Mean",column.names[i])
+    column.names[i] = gsub("([Bb]odyaccjerkmag)","BodyAccJerkMagnitude",column.names[i]) 
+    column.names[i] = gsub("Mag","Magnitude",column.names[i])
+    column.names[i] = gsub("MagnitudeMean","Magnitude_Mean",column.names[i])
+    column.names[i] = gsub("-StdDev","_StdDev",column.names[i])
+    column.names[i] = gsub("_-","_",column.names[i])
+    column.names[i] = gsub("__","_",column.names[i])
+    column.names[i] = gsub("-","_",column.names[i])
+```
+-  `df.final` stores the result of calculating the mean of every column for every `subject_id` and every `activity_id`. For 1 column, calculating this mean is done through the `ddply` command.
