@@ -13,6 +13,7 @@ This project includes the following files:
 - [README.md](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/README.md): what you're currently reading
 - [README.html](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/README.html): HTML version of what you're currently reading
 - [run_analysis.r](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/run_analysis.r): R script to run the analysis
+- [codebook](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/codebook.Rmd): Codebook
 - [tidy.txt](https://github.com/thieumbaland/getting_and_cleaning_data/blob/master/tidy.txt): the output file containing tidy data
 
 ####Requirements

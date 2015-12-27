@@ -102,7 +102,7 @@ main=function(){
   #produce mean
   df.final<-produce_mean(df.merged.filtered)
   
-  write.table(df.final,file="./getting_and_cleaning_data/tidy.txt",sep="\t",row.names=F,col.names=T)
+  write.table(df.final,file="./tidy.txt",sep="\t",row.names=F,col.names=T)
   return(df.final)
   }
 df.final<-main()
